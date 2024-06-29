@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>景区查询</title>
+    <meta charset="utf-8" />
+    <script src="./src/vue2.js"></script>
+    <script src="./src/leaflet.js"></script>  
+    <script src="./src/element-ui.js"></script>  
+    <script src="./src/jquery.min.js"></script>
+    <link rel="stylesheet" href="./src/index.css" /> 
+    <link rel="stylesheet" href="./src/leaflet.css" />
+    <link rel="stylesheet" href="./src/element-ui.css">       
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="./src/scenicSpots.json" id="scenicSpotsData" type="application/json"></script>
+    <script type="text/javascript" src="http://api.tianditu.gov.cn/api?v=4.0&tk=d60f0bf89c932a41019cda5e254e3db3"> </script>
+</head>
+<body>
+    <div class="scream" id="app">
+        <div class="header">
+            <div  class="header-left fl">   
+                <div v-if="weatherData">
+                    <p>{{ weatherData.city }}:&emsp;{{ weatherData.weather }}&emsp;{{ weatherData.temperature_float }}°C</p>
+                    <p>风力风向：&nbsp;{{ weatherData.winddirection }}&nbsp;{{ weatherData.windpower}}级</p>
+                </div>
+            </div>
+            <div class="header-center fl">
+                <div class="header-title">
+                    江苏旅游景区空间分布查询系统
+                </div>
+                <div class="header-img"></div>
+            </div>
+            <div class="header-right fl">
+                <p>{{ date_show }} - {{ week }}</p>
+                <p>{{ time_show }}</p>
+            </div>
+            <div class="header-bottom fl"></div>
+        </div>
+        <div class="main-container" >       
+            <div class="left-container">
+                <el-select v-model="selectedProvince" class="province-select">
+                    <el-option v-for="(scenic, index) in provinces" :key="index" :label="scenic.province"
+                        :value="scenic.province">
+                    </el-option>
+                </el-select>
+                <el-button @click="showScenicSpots" class="showspot-button">显示景点</el-button>
+                <div v-if="scenicSpots.length > 0" class="scenic-spots" >
+                    <el-card v-for="(spot, index) in scenicSpots" :key="index" class="spot-list" @click="locateSpot(spot)">
+                        <h3 class="spot-name" @click="viewSpot(spot)">{{ spot.name }}</h3>
+                        <p>{{ spot.location }}</p>
+                    </el-card>
+                </div>
+            </div>        
+            <div class="div_any_child div_height">
+                <div class="map-container">
+                    <div id="map"></div>
+                    
+                </div>
+            
+            </div>        
+        </div>
+    </div>
+    </body>
+    <script type="text/javascript">
+    function loadMap() {
+        //初始化地图对象
+        map = new T.Map("map", {
+            datasourcesControl: true,
+            // layers: [
+            //     L.tileLayer(tileUrl.Vect.TIANDITU, { subdomains: ["t0", "t1", "t2", "t3", "t4", "t5", "t6", "t7"] }),
+            //     L.tileLayer(tileUrl.Vect.TIANDITU_L, { subdomains: ["t0", "t1", "t2", "t3", "t4", "t5", "t6", "t7"] })
+            // ],
+            // zoomControl: true,
+        });
+        
+        //设置显示地图的中心点和级别
+        map.centerAndZoom(new T.LngLat(116.40969, 39.89945), 12);
+        //创建对象
+        var ctrl = new T.Control.MapType();
+        //添加控件
+        map.addControl(ctrl);
+    }
+        
+        
+    </script>
+  
+<script src="./src/index.js"></script>
+
+</html>
